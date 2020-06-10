@@ -1,0 +1,1 @@
+CALL nuova_nota("Test", "ivopecce", @_id1);

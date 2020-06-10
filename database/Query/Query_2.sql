@@ -1,0 +1,1 @@
+SELECT nota_ultima_modifica(1);

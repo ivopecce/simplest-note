@@ -1,0 +1,1 @@
+CALL aggiungi_utente("pecce", "ivo", "ivopecce", md5("password"));

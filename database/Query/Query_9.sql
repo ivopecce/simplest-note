@@ -1,0 +1,1 @@
+CALL modifica_permessi(3, 2, 'scrittura');

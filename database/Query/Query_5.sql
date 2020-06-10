@@ -1,0 +1,1 @@
+SELECT (SELECT titolo FROM (Descrizione INNER JOIN Nota ON Nota.ID_descrizione=Descrizione.ID_descrizione) WHERE ID_nota=1), (SELECT visualizza_testo_nota(1))
