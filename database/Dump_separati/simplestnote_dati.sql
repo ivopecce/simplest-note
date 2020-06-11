@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `simplestnote` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `simplestnote`;
 -- MySQL dump 10.13  Distrib 8.0.20, for Linux (x86_64)
 --
 -- Host: localhost    Database: simplestnote
@@ -16,113 +18,275 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `Allegato`
+-- Table structure for table `Allegato`
 --
 
-LOCK TABLES `Allegato` WRITE;
-/*!40000 ALTER TABLE `Allegato` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Allegato` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Allegato`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Allegato` (
+  `ID_allegato` int unsigned NOT NULL AUTO_INCREMENT,
+  `descrizione` varchar(100) DEFAULT NULL,
+  `allegato` mediumblob NOT NULL,
+  `ID_descrizione` int NOT NULL,
+  PRIMARY KEY (`ID_allegato`),
+  KEY `ID_descr_idx` (`ID_descrizione`),
+  CONSTRAINT `ID_descri` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Cataloga`
+-- Table structure for table `Cataloga`
 --
 
-LOCK TABLES `Cataloga` WRITE;
-/*!40000 ALTER TABLE `Cataloga` DISABLE KEYS */;
-INSERT INTO `Cataloga` VALUES (1,1,1);
-/*!40000 ALTER TABLE `Cataloga` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Cataloga`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Cataloga` (
+  `ID_cataloga` int NOT NULL AUTO_INCREMENT,
+  `ID_nota` int NOT NULL,
+  `ID_tag` int NOT NULL,
+  PRIMARY KEY (`ID_cataloga`),
+  KEY `ID_nota_idx` (`ID_nota`),
+  KEY `ID_tag_idx` (`ID_tag`),
+  CONSTRAINT `ID_not` FOREIGN KEY (`ID_nota`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ID_tag` FOREIGN KEY (`ID_tag`) REFERENCES `Tag` (`ID_tag`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Descrizione`
+-- Table structure for table `Descrizione`
 --
 
-LOCK TABLES `Descrizione` WRITE;
-/*!40000 ALTER TABLE `Descrizione` DISABLE KEYS */;
-INSERT INTO `Descrizione` VALUES (1,'2020-06-06 12:10:30','Test di prova'),(84,'2020-06-08 12:34:18','aaaa'),(85,'2020-06-08 15:58:28','Test'),(86,'2020-06-08 20:56:38','aldo'),(89,'2020-06-08 22:27:54','Test'),(95,'2020-06-09 13:36:03','provissima');
-/*!40000 ALTER TABLE `Descrizione` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Descrizione`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Descrizione` (
+  `ID_descrizione` int NOT NULL AUTO_INCREMENT,
+  `data` datetime NOT NULL,
+  `titolo` varchar(100) NOT NULL DEFAULT '[Inserisci un titolo]',
+  PRIMARY KEY (`ID_descrizione`)
+) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `Descrizione_BEFORE_UPDATE` BEFORE UPDATE ON `Descrizione` FOR EACH ROW BEGIN
+ INSERT INTO Storico_descrizioni(Storico_descrizioni.ID_descrizione, Storico_descrizioni.data,Storico_descrizioni.titolo)
+    VALUES(OLD.ID_descrizione, OLD.data, OLD.titolo);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Dumping data for table `Gestisce`
+-- Table structure for table `Gestisce`
 --
 
-LOCK TABLES `Gestisce` WRITE;
-/*!40000 ALTER TABLE `Gestisce` DISABLE KEYS */;
-INSERT INTO `Gestisce` VALUES (1,1,1,'proprietario'),(4,3,1,'scrittura'),(79,1,81,'proprietario'),(80,1,82,'proprietario'),(81,1,83,'proprietario'),(84,1,86,'proprietario'),(90,1,92,'proprietario');
-/*!40000 ALTER TABLE `Gestisce` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Gestisce`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Gestisce` (
+  `ID_gestisce` int NOT NULL AUTO_INCREMENT,
+  `ID_utente` int NOT NULL,
+  `ID_nota` int NOT NULL,
+  `privilegi` varchar(15) NOT NULL,
+  PRIMARY KEY (`ID_gestisce`),
+  KEY `ID_utente_idx` (`ID_utente`),
+  KEY `ID_nota_idx` (`ID_nota`),
+  CONSTRAINT `ID_nota` FOREIGN KEY (`ID_nota`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ID_utente` FOREIGN KEY (`ID_utente`) REFERENCES `Utente` (`ID_utente`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Modifica`
+-- Table structure for table `Modifica`
 --
 
-LOCK TABLES `Modifica` WRITE;
-/*!40000 ALTER TABLE `Modifica` DISABLE KEYS */;
-INSERT INTO `Modifica` VALUES (3,1,5,'2020-06-06 13:23:01'),(4,1,5,'2020-06-06 14:52:13'),(20,1,29,'2020-06-08 12:34:18'),(21,1,30,'2020-06-08 12:34:18'),(22,1,31,'2020-06-08 15:58:28'),(23,1,32,'2020-06-08 15:58:28'),(26,1,35,'2020-06-08 22:27:54'),(27,1,36,'2020-06-08 22:27:54'),(28,1,37,'2020-06-08 22:27:54'),(43,1,42,'2020-06-09 14:58:34'),(44,1,42,'2020-06-09 14:58:39'),(46,1,42,'2020-06-09 15:02:12'),(47,1,44,'2020-06-09 17:07:55');
-/*!40000 ALTER TABLE `Modifica` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Modifica`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Modifica` (
+  `ID_modifica` int NOT NULL AUTO_INCREMENT,
+  `ID_utente` int NOT NULL,
+  `ID_paragrafo` int NOT NULL,
+  `data` datetime NOT NULL,
+  PRIMARY KEY (`ID_modifica`),
+  KEY `ID_user_idx` (`ID_utente`),
+  KEY `ID_par_idx` (`ID_paragrafo`),
+  CONSTRAINT `ID_par` FOREIGN KEY (`ID_paragrafo`) REFERENCES `Paragrafo` (`ID_paragrafo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ID_user` FOREIGN KEY (`ID_utente`) REFERENCES `Utente` (`ID_utente`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Nota`
+-- Table structure for table `Nota`
 --
 
-LOCK TABLES `Nota` WRITE;
-/*!40000 ALTER TABLE `Nota` DISABLE KEYS */;
-INSERT INTO `Nota` VALUES (1,'2020-06-06 12:10:30',1,NULL,0,0,0,NULL),(81,'2020-06-08 12:34:18',84,1,1,0,0,NULL),(82,'2020-06-08 15:58:28',85,1,1,0,0,NULL),(83,'2020-06-08 20:56:38',86,81,2,0,0,NULL),(86,'2020-06-08 22:27:54',89,NULL,0,0,0,NULL),(92,'2020-06-09 13:36:03',95,NULL,0,0,0,NULL);
-/*!40000 ALTER TABLE `Nota` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Nota`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Nota` (
+  `ID_nota` int NOT NULL AUTO_INCREMENT,
+  `data_creazione` datetime NOT NULL,
+  `ID_descrizione` int NOT NULL,
+  `ID_superiore` int DEFAULT NULL,
+  `livello` int NOT NULL DEFAULT '0',
+  `archivio` tinyint NOT NULL DEFAULT '0',
+  `cestino` tinyint NOT NULL DEFAULT '0',
+  `data_cestino` datetime DEFAULT NULL,
+  PRIMARY KEY (`ID_nota`),
+  UNIQUE KEY `ID_descrizione_UNIQUE` (`ID_descrizione`),
+  KEY `ID_descrizione_idx` (`ID_descrizione`),
+  KEY `ID_superiore_idx` (`ID_superiore`),
+  CONSTRAINT `ID_descrizione` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ID_superiore` FOREIGN KEY (`ID_superiore`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `Nota_BEFORE_UPDATE` BEFORE UPDATE ON `Nota` FOR EACH ROW BEGIN
+	DECLARE _data_cestino timestamp;
+	IF NEW.cestino=1 THEN
+    BEGIN
+		SET _data_cestino=current_timestamp();
+        SET NEW.data_cestino=_data_cestino;
+    END;
+    ELSE
+    SET NEW.data_cestino=null;
+    BEGIN
+    END;
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Dumping data for table `Paragrafo`
+-- Table structure for table `Paragrafo`
 --
 
-LOCK TABLES `Paragrafo` WRITE;
-/*!40000 ALTER TABLE `Paragrafo` DISABLE KEYS */;
-INSERT INTO `Paragrafo` VALUES (1,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,1),(2,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,2),(3,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,3),(4,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,4),(5,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.',1,5),(29,'abc',84,1),(30,'def',84,2),(31,'prova',85,1),(32,'aaaaaa',85,2),(35,'dddd',89,1),(36,'gggg',89,2),(37,'aaaa',89,3),(42,'provaprivissma',95,1),(44,'prova aggiunta',86,1);
-/*!40000 ALTER TABLE `Paragrafo` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Paragrafo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Paragrafo` (
+  `ID_paragrafo` int NOT NULL AUTO_INCREMENT,
+  `contenuto` text NOT NULL,
+  `ID_descrizione` int NOT NULL,
+  `posizione` int NOT NULL,
+  PRIMARY KEY (`ID_paragrafo`),
+  KEY `ID_descriz_idx` (`ID_descrizione`),
+  CONSTRAINT `ID_descriz` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `Paragrafo_BEFORE_UPDATE` BEFORE UPDATE ON `Paragrafo` FOR EACH ROW BEGIN
+ INSERT INTO Storico_paragrafi(Storico_paragrafi.ID_paragrafo, Storico_paragrafi.data, Storico_paragrafi.contenuto, Storico_paragrafi.ID_descrizione, Storico_paragrafi.posizione, Storico_paragrafi.user)
+ VALUES(OLD.ID_paragrafo, (SELECT data from Modifica WHERE Modifica.ID_paragrafo=OLD.ID_paragrafo ORDER BY data DESC LIMIT 1), OLD.contenuto, OLD.ID_descrizione, OLD.posizione, (SELECT user from (Utente INNER JOIN Modifica on Utente.ID_utente=Modifica.ID_utente) INNER JOIN Paragrafo on OLD.ID_paragrafo=Modifica.ID_paragrafo WHERE data=Modifica.data ORDER BY data DESC LIMIT 1));
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Dumping data for table `Storico_descrizioni`
+-- Table structure for table `Storico_descrizioni`
 --
 
-LOCK TABLES `Storico_descrizioni` WRITE;
-/*!40000 ALTER TABLE `Storico_descrizioni` DISABLE KEYS */;
-INSERT INTO `Storico_descrizioni` VALUES (1,1,'2020-06-06 12:10:30','Test di prova');
-/*!40000 ALTER TABLE `Storico_descrizioni` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Storico_descrizioni`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Storico_descrizioni` (
+  `ID_s_descrizione` int NOT NULL AUTO_INCREMENT,
+  `ID_descrizione` int DEFAULT NULL,
+  `data` datetime NOT NULL,
+  `titolo` varchar(100) NOT NULL,
+  PRIMARY KEY (`ID_s_descrizione`),
+  KEY `ID_descrizione_idx` (`ID_descrizione`),
+  CONSTRAINT `ID_descr` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Storico_paragrafi`
+-- Table structure for table `Storico_paragrafi`
 --
 
-LOCK TABLES `Storico_paragrafi` WRITE;
-/*!40000 ALTER TABLE `Storico_paragrafi` DISABLE KEYS */;
-INSERT INTO `Storico_paragrafi` VALUES (5,5,'2020-06-06 13:23:01','Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,5,'ivopecce');
-/*!40000 ALTER TABLE `Storico_paragrafi` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Storico_paragrafi`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Storico_paragrafi` (
+  `ID_s_paragrafo` int NOT NULL AUTO_INCREMENT,
+  `ID_paragrafo` int NOT NULL,
+  `data` datetime NOT NULL,
+  `contenuto` text NOT NULL,
+  `ID_descrizione` int NOT NULL,
+  `posizione` int NOT NULL,
+  `user` varchar(45) NOT NULL,
+  PRIMARY KEY (`ID_s_paragrafo`),
+  KEY `ID_paragrafo_idx` (`ID_paragrafo`),
+  KEY `ID_desc_idx` (`ID_descrizione`),
+  CONSTRAINT `ID_desc` FOREIGN KEY (`ID_descrizione`) REFERENCES `Paragrafo` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ID_paragrafo` FOREIGN KEY (`ID_paragrafo`) REFERENCES `Paragrafo` (`ID_paragrafo`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Tag`
+-- Table structure for table `Tag`
 --
 
-LOCK TABLES `Tag` WRITE;
-/*!40000 ALTER TABLE `Tag` DISABLE KEYS */;
-INSERT INTO `Tag` VALUES (1,'test');
-/*!40000 ALTER TABLE `Tag` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Tag`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Tag` (
+  `ID_tag` int NOT NULL AUTO_INCREMENT,
+  `tag` varchar(45) NOT NULL,
+  PRIMARY KEY (`ID_tag`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Utente`
+-- Table structure for table `Utente`
 --
 
-LOCK TABLES `Utente` WRITE;
-/*!40000 ALTER TABLE `Utente` DISABLE KEYS */;
-INSERT INTO `Utente` VALUES (1,'pecce','ivo','ivopecce','5f4dcc3b5aa765d61d8327deb882cf99'),(3,'pecce','giuseppe','gpecce','5f4dcc3b5aa765d61d8327deb882cf99');
-/*!40000 ALTER TABLE `Utente` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `Utente`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Utente` (
+  `ID_utente` int NOT NULL AUTO_INCREMENT,
+  `cognome` varchar(30) NOT NULL,
+  `nome` varchar(30) NOT NULL,
+  `user` varchar(45) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  PRIMARY KEY (`ID_utente`),
+  UNIQUE KEY `user_UNIQUE` (`user`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -133,4 +297,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 19:30:15
+-- Dump completed on 2020-06-11 20:03:04

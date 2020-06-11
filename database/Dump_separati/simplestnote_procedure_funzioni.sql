@@ -31,6 +31,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `nota_ultima_modifica`(_ID_nota integer) RETURNS datetime
     DETERMINISTIC
 BEGIN
+#2 - Estrazione della data di ultima modifica della nota
 	DECLARE _data datetime;
     SET _data = (SELECT Modifica.data FROM ((Nota INNER JOIN Descrizione on Nota.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Paragrafo on Paragrafo.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Modifica on Paragrafo.ID_paragrafo=Modifica.ID_paragrafo WHERE ID_nota=_ID_nota ORDER BY Modifica.data DESC LIMIT 1);
     IF _data IS NULL THEN
@@ -82,6 +83,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `visualizza_testo_nota`(_ID_nota integer) RETURNS text CHARSET utf8
     DETERMINISTIC
 BEGIN
+#5 - Visualizzazione del testo di una specifica nota
     DECLARE _out text;
     SET group_concat_max_len = CAST((SELECT SUM(LENGTH(contenuto)) +lENGTH("\n-----\n-----\n\n")*COUNT(*) + COUNT(*) * LENGTH(', ') FROM ((Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione)INNER JOIN Paragrafo ON Paragrafo.ID_descrizione=Descrizione.ID_descrizione) WHERE ID_nota=_ID_nota ORDER BY ID_paragrafo) AS UNSIGNED);
 	SET _out = (SELECT group_concat(contenuto SEPARATOR "\n-----\n-----\n\n") FROM ((Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione)INNER JOIN Paragrafo ON Paragrafo.ID_descrizione=Descrizione.ID_descrizione) WHERE ID_nota=_ID_nota ORDER BY ID_paragrafo);
@@ -142,6 +144,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `aggiungi_utente`(_cognome char(30), _nome char(30), _user char(45), _password char(50))
 BEGIN
+#1 - Inserimento di un utente
 	DECLARE user_presente char(45);
 	SET user_presente=(select user from Utente where user=_user);
 	IF(user_presente) THEN
@@ -169,9 +172,17 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `archivia_nota`(_ID_nota integer)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `archivia_nota`(_ID_nota integer, _ID_utente integer)
 BEGIN
-	UPDATE Nota SET archivio=1 WHERE ID_nota=_ID_nota;
+	IF (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario') THEN
+    BEGIN
+		UPDATE Nota SET archivio=1 WHERE ID_nota=_ID_nota;
+	END;
+    ELSE
+    BEGIN
+		SIGNAL SQLSTATE '45000' SET message_text = "L'utente non `e proprietario della nota";
+    END;
+    END IF;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -233,6 +244,35 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `cestina_nota` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `cestina_nota`(_ID_nota integer, _ID_utente integer)
+BEGIN
+	DECLARE _privilegi char(15);
+    SET _privilegi = (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario');
+	IF _privilegi='proprietario' THEN
+    BEGIN
+		UPDATE Nota SET cestino=1 WHERE ID_nota=_ID_nota;
+	END;
+    ELSE
+    BEGIN
+		SIGNAL SQLSTATE '45000' SET message_text = "L'utente non `e proprietario della nota";
+    END;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `elimina_allegato` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -266,7 +306,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `inserisci_allegato`(_desc varchar(1
 BEGIN
 	DECLARE _ID_desc integer;
 	SET _ID_desc = (SELECT ID_descrizione FROM Nota WHERE ID_nota=_ID_nota);
-    INSERT INTO Allegato(descrizione, allegato, ID_descrizione) VALUES (_desc, LOAD_FILE(p_allegato), _ID_desc);
+    INSERT INTO Allegato(descrizione, allegato, ID_descrizione) VALUES (_desc, p_allegato, _ID_desc);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -285,9 +325,11 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `lista_note`(_ID_utente integer)
 BEGIN
+#3 - Estrazione della lista delle note presenti nel blocco appunti di un utente con titolo e data di ultima modifica
+#In aggiunta a quanto richiesto, viene visualizzato anche il testo della nota
 	SELECT Nota.ID_nota, titolo, visualizza_testo_nota(Nota.ID_nota) AS testo, nota_ultima_modifica(Nota.ID_nota) as data_ultima_modifica, (SELECT user FROM Utente INNER JOIN Gestisce ON Utente.ID_utente=Gestisce.ID_Utente WHERE Gestisce.ID_nota=ID_nota and privilegi='proprietario' LIMIT 1) AS proprietario, privilegi
     FROM Gestisce INNER JOIN ((Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione)) ON Gestisce.ID_nota=Nota.ID_nota
-	WHERE Gestisce.ID_utente=_ID_utente;
+	WHERE Gestisce.ID_utente=_ID_utente AND Nota.cestino=0;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -327,6 +369,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modifica_paragrafo`(_ID_paragrafo integer, _contenuto text, _ID_utente integer)
 BEGIN
+#7 - Aggiornamento di un paragrafo di testo da parte di uno specifico utente
 	UPDATE Paragrafo SET contenuto=_contenuto where ID_paragrafo=_ID_paragrafo;
     INSERT INTO Modifica(ID_utente, ID_paragrafo, data) VALUES(_ID_utente, _ID_paragrafo, current_timestamp());
 END ;;
@@ -347,6 +390,8 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modifica_permessi`(_ID_utente integer, _ID_nota integer, _permessi char(15))
 BEGIN
+#9 - Concessione ad un unutente dei privilegi su una nota
+#In aggiunta alla specifica, tale procedura permette anche di eliminare i permessi
 	DECLARE _privilegi char(15);
     SET _privilegi = (SELECT privilegi FROM Gestisce WHERE ID_utente=_ID_utente);
 	IF _privilegi = 'proprietario' THEN SIGNAL SQLSTATE '45000' SET message_text = "Utente proprietario, impossibile modificare i permessi sulla nota"; END IF;
@@ -392,25 +437,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `nota_ultima_modifica` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `nota_ultima_modifica`(_ID_nota integer)
-BEGIN
-	SELECT Modifica.data FROM ((Nota INNER JOIN Descrizione on Nota.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Paragrafo on Paragrafo.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Modifica on Paragrafo.ID_paragrafo=Modifica.ID_paragrafo WHERE ID_nota=_ID_nota ORDER BY Modifica.data DESC LIMIT 1;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `nuova_nota` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -423,7 +449,8 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `nuova_nota`(IN _titolo char(100), IN _user char(45), OUT _id1 integer)
 BEGIN
-	DECLARE _data timestamp;
+#4 - Creazione di una nuova nota nel blocco appunti	
+    DECLARE _data timestamp;
 	DECLARE _id2 integer;
     DECLARE IDutente integer;
 	SET _data = current_timestamp();
@@ -452,6 +479,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `nuovo_paragrafo`(_contenuto text, _ID_descrizione integer, _ID_utente integer)
 BEGIN
+#6 - Accodamento di un paragrafo di testo a una nota
 	Declare _data datetime;
     Declare _id_paragrafo integer;
     DECLARE _posizione integer;
@@ -519,6 +547,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ricerca_contenuto`(_contenuto text, _ID_utente integer)
 BEGIN
+#8 - Ricerca di una nota in base al testo presente nel contenuto
 	DROP TEMPORARY TABLE IF EXISTS tmp;
     CREATE TEMPORARY TABLE tmp SELECT titolo, visualizza_testo_nota(Nota.ID_nota) AS testo
     FROM ((Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Paragrafo ON Paragrafo.ID_descrizione=Descrizione.ID_descrizione) Inner JOIN Gestisce ON Nota.ID_nota=Gestisce.ID_nota
@@ -545,6 +574,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ricerca_tag`(_tag char(45), _ID_utente integer)
 BEGIN
+#8 - Ricerca di una nota in base al testo presente nei tag
 	SELECT titolo 
     FROM (((Nota INNER JOIN Descrizione on Nota.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Cataloga on Cataloga.ID_nota=Nota.ID_nota) INNER JOIN Tag on Cataloga.ID_tag=Tag.ID_tag) Inner JOIN Gestisce ON Nota.ID_nota=Gestisce.ID_nota
     WHERE Tag.tag = '%'+_tag+'%' and Gestisce.ID_utente=_ID_utente and privilegi IN ('proprietario', 'lettura', 'scrittura');
@@ -566,6 +596,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ricerca_titolo`(_titolo char(100), _ID_utente integer)
 BEGIN
+#8 - Ricerca di una nota in base al testo presente nel titolo
 	SELECT titolo
     FROM (Nota INNER JOIN Descrizione on Nota.ID_descrizione=Descrizione.ID_descrizione) Inner JOIN Gestisce ON Nota.ID_nota=Gestisce.ID_nota
     WHERE titolo='%'+_titolo+'%' and Gestisce.ID_utente=_ID_utente and privilegi IN ('proprietario', 'lettura', 'scrittura');
@@ -596,6 +627,60 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `ripristina_archivio` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ripristina_archivio`(_ID_nota integer, _ID_utente integer)
+BEGIN
+	IF (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario') THEN
+    BEGIN
+		UPDATE Nota SET archivio=0 WHERE ID_nota=_ID_nota;
+	END;
+    ELSE
+    BEGIN
+		SIGNAL SQLSTATE '45000' SET message_text = "L'utente non `e proprietario della nota";
+    END;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `ripristina_cestino` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ripristina_cestino`(_ID_nota integer, _ID_utente integer)
+BEGIN
+	IF (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario') THEN
+    BEGIN
+		UPDATE Nota SET cestino=0 WHERE ID_nota=_ID_nota;
+	END;
+    ELSE
+    BEGIN
+		SIGNAL SQLSTATE '45000' SET message_text = "L'utente non `e proprietario della nota";
+    END;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sottonota` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -608,6 +693,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sottonota`(_ID_nota INT, _ID_superiore INT )
 BEGIN
+#10 - Impostazione di una nota come sotto-nota di un'altra
 	DECLARE _livello integer;
     SET _livello = (SELECT livello FROM Nota WHERE Nota.ID_nota=_ID_nota);
     IF _livello<2 THEN 
@@ -641,6 +727,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `storico_paragrafo`(_ID_paragrafo integer)
 BEGIN
+#12 - Visualizzazione dello storico delle modifiche di un determinato paragrafo
 	SELECT contenuto, posizione, data, user
     FROM Storico_paragrafi
     WHERE ID_paragrafo = _ID_paragrafo
@@ -688,6 +775,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `visualizza_sottonote`(_ID_nota integer)
 BEGIN
+#11 - Visualizzazione di tutte le sotto-note di una data nota
 	DECLARE _livello integer;
     SET _livello = (SELECT livello FROM Nota WHERE Nota.ID_nota=_ID_nota);
     IF _livello<2 THEN
@@ -721,4 +809,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 19:27:37
+-- Dump completed on 2020-06-11 20:03:20

@@ -27,12 +27,12 @@ DROP TABLE IF EXISTS `Allegato`;
 CREATE TABLE `Allegato` (
   `ID_allegato` int unsigned NOT NULL AUTO_INCREMENT,
   `descrizione` varchar(100) DEFAULT NULL,
-  `allegato` blob NOT NULL,
+  `allegato` mediumblob NOT NULL,
   `ID_descrizione` int NOT NULL,
   PRIMARY KEY (`ID_allegato`),
   KEY `ID_descr_idx` (`ID_descrizione`),
   CONSTRAINT `ID_descri` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,7 +51,7 @@ CREATE TABLE `Cataloga` (
   KEY `ID_tag_idx` (`ID_tag`),
   CONSTRAINT `ID_not` FOREIGN KEY (`ID_nota`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_tag` FOREIGN KEY (`ID_tag`) REFERENCES `Tag` (`ID_tag`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +66,7 @@ CREATE TABLE `Descrizione` (
   `data` datetime NOT NULL,
   `titolo` varchar(100) NOT NULL DEFAULT '[Inserisci un titolo]',
   PRIMARY KEY (`ID_descrizione`)
-) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -104,7 +104,7 @@ CREATE TABLE `Gestisce` (
   KEY `ID_nota_idx` (`ID_nota`),
   CONSTRAINT `ID_nota` FOREIGN KEY (`ID_nota`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_utente` FOREIGN KEY (`ID_utente`) REFERENCES `Utente` (`ID_utente`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -124,7 +124,7 @@ CREATE TABLE `Modifica` (
   KEY `ID_par_idx` (`ID_paragrafo`),
   CONSTRAINT `ID_par` FOREIGN KEY (`ID_paragrafo`) REFERENCES `Paragrafo` (`ID_paragrafo`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_user` FOREIGN KEY (`ID_utente`) REFERENCES `Utente` (`ID_utente`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,7 +149,7 @@ CREATE TABLE `Nota` (
   KEY `ID_superiore_idx` (`ID_superiore`),
   CONSTRAINT `ID_descrizione` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_superiore` FOREIGN KEY (`ID_superiore`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -166,6 +166,10 @@ DELIMITER ;;
     BEGIN
 		SET _data_cestino=current_timestamp();
         SET NEW.data_cestino=_data_cestino;
+    END;
+    ELSE
+    SET NEW.data_cestino=null;
+    BEGIN
     END;
     END IF;
 END */;;
@@ -190,7 +194,7 @@ CREATE TABLE `Paragrafo` (
   PRIMARY KEY (`ID_paragrafo`),
   KEY `ID_descriz_idx` (`ID_descrizione`),
   CONSTRAINT `ID_descriz` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -226,7 +230,7 @@ CREATE TABLE `Storico_descrizioni` (
   PRIMARY KEY (`ID_s_descrizione`),
   KEY `ID_descrizione_idx` (`ID_descrizione`),
   CONSTRAINT `ID_descr` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,7 +253,7 @@ CREATE TABLE `Storico_paragrafi` (
   KEY `ID_desc_idx` (`ID_descrizione`),
   CONSTRAINT `ID_desc` FOREIGN KEY (`ID_descrizione`) REFERENCES `Paragrafo` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_paragrafo` FOREIGN KEY (`ID_paragrafo`) REFERENCES `Paragrafo` (`ID_paragrafo`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -281,7 +285,7 @@ CREATE TABLE `Utente` (
   `password` varchar(50) NOT NULL,
   PRIMARY KEY (`ID_utente`),
   UNIQUE KEY `user_UNIQUE` (`user`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -293,4 +297,4 @@ CREATE TABLE `Utente` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 19:29:55
+-- Dump completed on 2020-06-11 20:02:01

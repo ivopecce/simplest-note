@@ -27,12 +27,12 @@ DROP TABLE IF EXISTS `Allegato`;
 CREATE TABLE `Allegato` (
   `ID_allegato` int unsigned NOT NULL AUTO_INCREMENT,
   `descrizione` varchar(100) DEFAULT NULL,
-  `allegato` blob NOT NULL,
+  `allegato` mediumblob NOT NULL,
   `ID_descrizione` int NOT NULL,
   PRIMARY KEY (`ID_allegato`),
   KEY `ID_descr_idx` (`ID_descrizione`),
   CONSTRAINT `ID_descri` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,6 +41,7 @@ CREATE TABLE `Allegato` (
 
 LOCK TABLES `Allegato` WRITE;
 /*!40000 ALTER TABLE `Allegato` DISABLE KEYS */;
+INSERT INTO `Allegato` VALUES (1,'prova',_binary '/home/ivo/test.txt',1);
 /*!40000 ALTER TABLE `Allegato` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,7 +61,7 @@ CREATE TABLE `Cataloga` (
   KEY `ID_tag_idx` (`ID_tag`),
   CONSTRAINT `ID_not` FOREIGN KEY (`ID_nota`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_tag` FOREIGN KEY (`ID_tag`) REFERENCES `Tag` (`ID_tag`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -69,7 +70,7 @@ CREATE TABLE `Cataloga` (
 
 LOCK TABLES `Cataloga` WRITE;
 /*!40000 ALTER TABLE `Cataloga` DISABLE KEYS */;
-INSERT INTO `Cataloga` VALUES (1,1,1);
+INSERT INTO `Cataloga` VALUES (1,1,1),(2,95,1);
 /*!40000 ALTER TABLE `Cataloga` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +86,7 @@ CREATE TABLE `Descrizione` (
   `data` datetime NOT NULL,
   `titolo` varchar(100) NOT NULL DEFAULT '[Inserisci un titolo]',
   PRIMARY KEY (`ID_descrizione`)
-) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +95,7 @@ CREATE TABLE `Descrizione` (
 
 LOCK TABLES `Descrizione` WRITE;
 /*!40000 ALTER TABLE `Descrizione` DISABLE KEYS */;
-INSERT INTO `Descrizione` VALUES (1,'2020-06-06 12:10:30','Test di prova'),(84,'2020-06-08 12:34:18','aaaa'),(85,'2020-06-08 15:58:28','Test'),(86,'2020-06-08 20:56:38','aldo'),(89,'2020-06-08 22:27:54','Test'),(95,'2020-06-09 13:36:03','provissima');
+INSERT INTO `Descrizione` VALUES (1,'2020-06-06 12:10:30','Test di prova'),(98,'2020-06-11 19:46:25','Titolo di prova 1');
 /*!40000 ALTER TABLE `Descrizione` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -133,7 +134,7 @@ CREATE TABLE `Gestisce` (
   KEY `ID_nota_idx` (`ID_nota`),
   CONSTRAINT `ID_nota` FOREIGN KEY (`ID_nota`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_utente` FOREIGN KEY (`ID_utente`) REFERENCES `Utente` (`ID_utente`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,7 +143,7 @@ CREATE TABLE `Gestisce` (
 
 LOCK TABLES `Gestisce` WRITE;
 /*!40000 ALTER TABLE `Gestisce` DISABLE KEYS */;
-INSERT INTO `Gestisce` VALUES (1,1,1,'proprietario'),(4,3,1,'scrittura'),(79,1,81,'proprietario'),(80,1,82,'proprietario'),(81,1,83,'proprietario'),(84,1,86,'proprietario'),(90,1,92,'proprietario');
+INSERT INTO `Gestisce` VALUES (1,1,1,'proprietario'),(93,13,95,'proprietario'),(94,1,95,'lettura');
 /*!40000 ALTER TABLE `Gestisce` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,7 +164,7 @@ CREATE TABLE `Modifica` (
   KEY `ID_par_idx` (`ID_paragrafo`),
   CONSTRAINT `ID_par` FOREIGN KEY (`ID_paragrafo`) REFERENCES `Paragrafo` (`ID_paragrafo`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_user` FOREIGN KEY (`ID_utente`) REFERENCES `Utente` (`ID_utente`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +173,7 @@ CREATE TABLE `Modifica` (
 
 LOCK TABLES `Modifica` WRITE;
 /*!40000 ALTER TABLE `Modifica` DISABLE KEYS */;
-INSERT INTO `Modifica` VALUES (3,1,5,'2020-06-06 13:23:01'),(4,1,5,'2020-06-06 14:52:13'),(20,1,29,'2020-06-08 12:34:18'),(21,1,30,'2020-06-08 12:34:18'),(22,1,31,'2020-06-08 15:58:28'),(23,1,32,'2020-06-08 15:58:28'),(26,1,35,'2020-06-08 22:27:54'),(27,1,36,'2020-06-08 22:27:54'),(28,1,37,'2020-06-08 22:27:54'),(43,1,42,'2020-06-09 14:58:34'),(44,1,42,'2020-06-09 14:58:39'),(46,1,42,'2020-06-09 15:02:12'),(47,1,44,'2020-06-09 17:07:55');
+INSERT INTO `Modifica` VALUES (3,1,5,'2020-06-06 13:23:01'),(4,1,5,'2020-06-06 14:52:13'),(52,13,49,'2020-06-11 19:46:25'),(53,13,50,'2020-06-11 19:46:25'),(54,13,49,'2020-06-11 19:49:52'),(55,13,50,'2020-06-11 19:49:52');
 /*!40000 ALTER TABLE `Modifica` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -198,7 +199,7 @@ CREATE TABLE `Nota` (
   KEY `ID_superiore_idx` (`ID_superiore`),
   CONSTRAINT `ID_descrizione` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_superiore` FOREIGN KEY (`ID_superiore`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,7 +208,7 @@ CREATE TABLE `Nota` (
 
 LOCK TABLES `Nota` WRITE;
 /*!40000 ALTER TABLE `Nota` DISABLE KEYS */;
-INSERT INTO `Nota` VALUES (1,'2020-06-06 12:10:30',1,NULL,0,0,0,NULL),(81,'2020-06-08 12:34:18',84,1,1,0,0,NULL),(82,'2020-06-08 15:58:28',85,1,1,0,0,NULL),(83,'2020-06-08 20:56:38',86,81,2,0,0,NULL),(86,'2020-06-08 22:27:54',89,NULL,0,0,0,NULL),(92,'2020-06-09 13:36:03',95,NULL,0,0,0,NULL);
+INSERT INTO `Nota` VALUES (1,'2020-06-06 12:10:30',1,NULL,0,0,0,NULL),(95,'2020-06-11 19:46:25',98,NULL,0,0,0,NULL);
 /*!40000 ALTER TABLE `Nota` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -225,6 +226,10 @@ DELIMITER ;;
     BEGIN
 		SET _data_cestino=current_timestamp();
         SET NEW.data_cestino=_data_cestino;
+    END;
+    ELSE
+    SET NEW.data_cestino=null;
+    BEGIN
     END;
     END IF;
 END */;;
@@ -249,7 +254,7 @@ CREATE TABLE `Paragrafo` (
   PRIMARY KEY (`ID_paragrafo`),
   KEY `ID_descriz_idx` (`ID_descrizione`),
   CONSTRAINT `ID_descriz` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,7 +263,7 @@ CREATE TABLE `Paragrafo` (
 
 LOCK TABLES `Paragrafo` WRITE;
 /*!40000 ALTER TABLE `Paragrafo` DISABLE KEYS */;
-INSERT INTO `Paragrafo` VALUES (1,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,1),(2,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,2),(3,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,3),(4,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,4),(5,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.',1,5),(29,'abc',84,1),(30,'def',84,2),(31,'prova',85,1),(32,'aaaaaa',85,2),(35,'dddd',89,1),(36,'gggg',89,2),(37,'aaaa',89,3),(42,'provaprivissma',95,1),(44,'prova aggiunta',86,1);
+INSERT INTO `Paragrafo` VALUES (1,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,1),(2,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,2),(3,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,3),(4,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,4),(5,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.',1,5),(49,'Paragrafo 1',98,1),(50,'Paragrafo 2',98,2);
 /*!40000 ALTER TABLE `Paragrafo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -295,7 +300,7 @@ CREATE TABLE `Storico_descrizioni` (
   PRIMARY KEY (`ID_s_descrizione`),
   KEY `ID_descrizione_idx` (`ID_descrizione`),
   CONSTRAINT `ID_descr` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -304,7 +309,7 @@ CREATE TABLE `Storico_descrizioni` (
 
 LOCK TABLES `Storico_descrizioni` WRITE;
 /*!40000 ALTER TABLE `Storico_descrizioni` DISABLE KEYS */;
-INSERT INTO `Storico_descrizioni` VALUES (1,1,'2020-06-06 12:10:30','Test di prova');
+INSERT INTO `Storico_descrizioni` VALUES (1,1,'2020-06-06 12:10:30','Test di prova'),(4,98,'2020-06-11 19:46:25','Titolo di prova');
 /*!40000 ALTER TABLE `Storico_descrizioni` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -328,7 +333,7 @@ CREATE TABLE `Storico_paragrafi` (
   KEY `ID_desc_idx` (`ID_descrizione`),
   CONSTRAINT `ID_desc` FOREIGN KEY (`ID_descrizione`) REFERENCES `Paragrafo` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_paragrafo` FOREIGN KEY (`ID_paragrafo`) REFERENCES `Paragrafo` (`ID_paragrafo`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -337,7 +342,7 @@ CREATE TABLE `Storico_paragrafi` (
 
 LOCK TABLES `Storico_paragrafi` WRITE;
 /*!40000 ALTER TABLE `Storico_paragrafi` DISABLE KEYS */;
-INSERT INTO `Storico_paragrafi` VALUES (5,5,'2020-06-06 13:23:01','Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,5,'ivopecce');
+INSERT INTO `Storico_paragrafi` VALUES (5,5,'2020-06-06 13:23:01','Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,5,'ivopecce'),(18,49,'2020-06-11 19:46:25','Paragrafo 1',98,1,'gpecce'),(19,50,'2020-06-11 19:46:25','Paragrafo 2',98,2,'gpecce');
 /*!40000 ALTER TABLE `Storico_paragrafi` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -380,7 +385,7 @@ CREATE TABLE `Utente` (
   `password` varchar(50) NOT NULL,
   PRIMARY KEY (`ID_utente`),
   UNIQUE KEY `user_UNIQUE` (`user`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -389,7 +394,7 @@ CREATE TABLE `Utente` (
 
 LOCK TABLES `Utente` WRITE;
 /*!40000 ALTER TABLE `Utente` DISABLE KEYS */;
-INSERT INTO `Utente` VALUES (1,'pecce','ivo','ivopecce','5f4dcc3b5aa765d61d8327deb882cf99'),(3,'pecce','giuseppe','gpecce','5f4dcc3b5aa765d61d8327deb882cf99');
+INSERT INTO `Utente` VALUES (1,'pecce','ivo','ivopecce','5f4dcc3b5aa765d61d8327deb882cf99'),(13,'','Giuseppe','gpecce','5f4dcc3b5aa765d61d8327deb882cf99');
 /*!40000 ALTER TABLE `Utente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -434,6 +439,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `nota_ultima_modifica`(_ID_nota integer) RETURNS datetime
     DETERMINISTIC
 BEGIN
+#2 - Estrazione della data di ultima modifica della nota
 	DECLARE _data datetime;
     SET _data = (SELECT Modifica.data FROM ((Nota INNER JOIN Descrizione on Nota.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Paragrafo on Paragrafo.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Modifica on Paragrafo.ID_paragrafo=Modifica.ID_paragrafo WHERE ID_nota=_ID_nota ORDER BY Modifica.data DESC LIMIT 1);
     IF _data IS NULL THEN
@@ -485,6 +491,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `visualizza_testo_nota`(_ID_nota integer) RETURNS text CHARSET utf8
     DETERMINISTIC
 BEGIN
+#5 - Visualizzazione del testo di una specifica nota
     DECLARE _out text;
     SET group_concat_max_len = CAST((SELECT SUM(LENGTH(contenuto)) +lENGTH("\n-----\n-----\n\n")*COUNT(*) + COUNT(*) * LENGTH(', ') FROM ((Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione)INNER JOIN Paragrafo ON Paragrafo.ID_descrizione=Descrizione.ID_descrizione) WHERE ID_nota=_ID_nota ORDER BY ID_paragrafo) AS UNSIGNED);
 	SET _out = (SELECT group_concat(contenuto SEPARATOR "\n-----\n-----\n\n") FROM ((Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione)INNER JOIN Paragrafo ON Paragrafo.ID_descrizione=Descrizione.ID_descrizione) WHERE ID_nota=_ID_nota ORDER BY ID_paragrafo);
@@ -545,6 +552,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `aggiungi_utente`(_cognome char(30), _nome char(30), _user char(45), _password char(50))
 BEGIN
+#1 - Inserimento di un utente
 	DECLARE user_presente char(45);
 	SET user_presente=(select user from Utente where user=_user);
 	IF(user_presente) THEN
@@ -572,9 +580,17 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `archivia_nota`(_ID_nota integer)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `archivia_nota`(_ID_nota integer, _ID_utente integer)
 BEGIN
-	UPDATE Nota SET archivio=1 WHERE ID_nota=_ID_nota;
+	IF (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario') THEN
+    BEGIN
+		UPDATE Nota SET archivio=1 WHERE ID_nota=_ID_nota;
+	END;
+    ELSE
+    BEGIN
+		SIGNAL SQLSTATE '45000' SET message_text = "L'utente non `e proprietario della nota";
+    END;
+    END IF;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -636,6 +652,35 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `cestina_nota` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `cestina_nota`(_ID_nota integer, _ID_utente integer)
+BEGIN
+	DECLARE _privilegi char(15);
+    SET _privilegi = (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario');
+	IF _privilegi='proprietario' THEN
+    BEGIN
+		UPDATE Nota SET cestino=1 WHERE ID_nota=_ID_nota;
+	END;
+    ELSE
+    BEGIN
+		SIGNAL SQLSTATE '45000' SET message_text = "L'utente non `e proprietario della nota";
+    END;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `elimina_allegato` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -669,7 +714,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `inserisci_allegato`(_desc varchar(1
 BEGIN
 	DECLARE _ID_desc integer;
 	SET _ID_desc = (SELECT ID_descrizione FROM Nota WHERE ID_nota=_ID_nota);
-    INSERT INTO Allegato(descrizione, allegato, ID_descrizione) VALUES (_desc, LOAD_FILE(p_allegato), _ID_desc);
+    INSERT INTO Allegato(descrizione, allegato, ID_descrizione) VALUES (_desc, p_allegato, _ID_desc);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -688,9 +733,11 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `lista_note`(_ID_utente integer)
 BEGIN
+#3 - Estrazione della lista delle note presenti nel blocco appunti di un utente con titolo e data di ultima modifica
+#In aggiunta a quanto richiesto, viene visualizzato anche il testo della nota
 	SELECT Nota.ID_nota, titolo, visualizza_testo_nota(Nota.ID_nota) AS testo, nota_ultima_modifica(Nota.ID_nota) as data_ultima_modifica, (SELECT user FROM Utente INNER JOIN Gestisce ON Utente.ID_utente=Gestisce.ID_Utente WHERE Gestisce.ID_nota=ID_nota and privilegi='proprietario' LIMIT 1) AS proprietario, privilegi
     FROM Gestisce INNER JOIN ((Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione)) ON Gestisce.ID_nota=Nota.ID_nota
-	WHERE Gestisce.ID_utente=_ID_utente;
+	WHERE Gestisce.ID_utente=_ID_utente AND Nota.cestino=0;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -730,6 +777,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modifica_paragrafo`(_ID_paragrafo integer, _contenuto text, _ID_utente integer)
 BEGIN
+#7 - Aggiornamento di un paragrafo di testo da parte di uno specifico utente
 	UPDATE Paragrafo SET contenuto=_contenuto where ID_paragrafo=_ID_paragrafo;
     INSERT INTO Modifica(ID_utente, ID_paragrafo, data) VALUES(_ID_utente, _ID_paragrafo, current_timestamp());
 END ;;
@@ -750,6 +798,8 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modifica_permessi`(_ID_utente integer, _ID_nota integer, _permessi char(15))
 BEGIN
+#9 - Concessione ad un unutente dei privilegi su una nota
+#In aggiunta alla specifica, tale procedura permette anche di eliminare i permessi
 	DECLARE _privilegi char(15);
     SET _privilegi = (SELECT privilegi FROM Gestisce WHERE ID_utente=_ID_utente);
 	IF _privilegi = 'proprietario' THEN SIGNAL SQLSTATE '45000' SET message_text = "Utente proprietario, impossibile modificare i permessi sulla nota"; END IF;
@@ -795,25 +845,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `nota_ultima_modifica` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `nota_ultima_modifica`(_ID_nota integer)
-BEGIN
-	SELECT Modifica.data FROM ((Nota INNER JOIN Descrizione on Nota.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Paragrafo on Paragrafo.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Modifica on Paragrafo.ID_paragrafo=Modifica.ID_paragrafo WHERE ID_nota=_ID_nota ORDER BY Modifica.data DESC LIMIT 1;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `nuova_nota` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -826,7 +857,8 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `nuova_nota`(IN _titolo char(100), IN _user char(45), OUT _id1 integer)
 BEGIN
-	DECLARE _data timestamp;
+#4 - Creazione di una nuova nota nel blocco appunti	
+    DECLARE _data timestamp;
 	DECLARE _id2 integer;
     DECLARE IDutente integer;
 	SET _data = current_timestamp();
@@ -855,6 +887,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `nuovo_paragrafo`(_contenuto text, _ID_descrizione integer, _ID_utente integer)
 BEGIN
+#6 - Accodamento di un paragrafo di testo a una nota
 	Declare _data datetime;
     Declare _id_paragrafo integer;
     DECLARE _posizione integer;
@@ -922,6 +955,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ricerca_contenuto`(_contenuto text, _ID_utente integer)
 BEGIN
+#8 - Ricerca di una nota in base al testo presente nel contenuto
 	DROP TEMPORARY TABLE IF EXISTS tmp;
     CREATE TEMPORARY TABLE tmp SELECT titolo, visualizza_testo_nota(Nota.ID_nota) AS testo
     FROM ((Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Paragrafo ON Paragrafo.ID_descrizione=Descrizione.ID_descrizione) Inner JOIN Gestisce ON Nota.ID_nota=Gestisce.ID_nota
@@ -948,6 +982,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ricerca_tag`(_tag char(45), _ID_utente integer)
 BEGIN
+#8 - Ricerca di una nota in base al testo presente nei tag
 	SELECT titolo 
     FROM (((Nota INNER JOIN Descrizione on Nota.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN Cataloga on Cataloga.ID_nota=Nota.ID_nota) INNER JOIN Tag on Cataloga.ID_tag=Tag.ID_tag) Inner JOIN Gestisce ON Nota.ID_nota=Gestisce.ID_nota
     WHERE Tag.tag = '%'+_tag+'%' and Gestisce.ID_utente=_ID_utente and privilegi IN ('proprietario', 'lettura', 'scrittura');
@@ -969,6 +1004,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ricerca_titolo`(_titolo char(100), _ID_utente integer)
 BEGIN
+#8 - Ricerca di una nota in base al testo presente nel titolo
 	SELECT titolo
     FROM (Nota INNER JOIN Descrizione on Nota.ID_descrizione=Descrizione.ID_descrizione) Inner JOIN Gestisce ON Nota.ID_nota=Gestisce.ID_nota
     WHERE titolo='%'+_titolo+'%' and Gestisce.ID_utente=_ID_utente and privilegi IN ('proprietario', 'lettura', 'scrittura');
@@ -999,6 +1035,60 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `ripristina_archivio` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ripristina_archivio`(_ID_nota integer, _ID_utente integer)
+BEGIN
+	IF (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario') THEN
+    BEGIN
+		UPDATE Nota SET archivio=0 WHERE ID_nota=_ID_nota;
+	END;
+    ELSE
+    BEGIN
+		SIGNAL SQLSTATE '45000' SET message_text = "L'utente non `e proprietario della nota";
+    END;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `ripristina_cestino` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ripristina_cestino`(_ID_nota integer, _ID_utente integer)
+BEGIN
+	IF (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario') THEN
+    BEGIN
+		UPDATE Nota SET cestino=0 WHERE ID_nota=_ID_nota;
+	END;
+    ELSE
+    BEGIN
+		SIGNAL SQLSTATE '45000' SET message_text = "L'utente non `e proprietario della nota";
+    END;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sottonota` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1011,6 +1101,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sottonota`(_ID_nota INT, _ID_superiore INT )
 BEGIN
+#10 - Impostazione di una nota come sotto-nota di un'altra
 	DECLARE _livello integer;
     SET _livello = (SELECT livello FROM Nota WHERE Nota.ID_nota=_ID_nota);
     IF _livello<2 THEN 
@@ -1044,6 +1135,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `storico_paragrafo`(_ID_paragrafo integer)
 BEGIN
+#12 - Visualizzazione dello storico delle modifiche di un determinato paragrafo
 	SELECT contenuto, posizione, data, user
     FROM Storico_paragrafi
     WHERE ID_paragrafo = _ID_paragrafo
@@ -1091,6 +1183,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `visualizza_sottonote`(_ID_nota integer)
 BEGIN
+#11 - Visualizzazione di tutte le sotto-note di una data nota
 	DECLARE _livello integer;
     SET _livello = (SELECT livello FROM Nota WHERE Nota.ID_nota=_ID_nota);
     IF _livello<2 THEN
@@ -1124,4 +1217,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 19:30:49
+-- Dump completed on 2020-06-11 20:02:27

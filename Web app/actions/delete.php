@@ -8,9 +8,9 @@
 
     
 
-    $sql="CALL cancella_nota(?);";
+    $sql="CALL cestina_nota(?, ?);";
     $stmt=$mysqliobj->prepare($sql);
-    $stmt->bind_param("i", $id);
+    $stmt->bind_param("ii", $id, $_SESSION['snUtente']['ID_utente']);
     $stmt->execute();
     $res=$stmt->get_result();
 

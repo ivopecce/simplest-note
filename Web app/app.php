@@ -35,8 +35,7 @@
           </div>
           <div class="card-action">
             <div class="click-able" onclick="remove(<?= $row['ID_nota'] ?>, '<?= $row['titolo'] ?>')">
-              <i class="material-icons ">elimina</i>
-              <!-- <?= $isHaveColor ?> -->
+              <i class="material-icons">delete</i>
             </div>
 
             <form class="delete-form" id="delete-form" name="delete-form" action="actions/delete.php" method="post">
