@@ -470,6 +470,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `vedi_paragrafo`(_ID_paragrafo integer) RETURNS text CHARSET utf8
     DETERMINISTIC
 BEGIN
+#Restituisce un determinato paragrafo
 	RETURN (SELECT DISTINCT contenuto FROM Paragrafo WHERE ID_paragrafo=_ID_paragrafo);
     
 END ;;
@@ -521,6 +522,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `aggiungi_tag`(_tag varchar(45), _ID_nota int)
 BEGIN
+#Permette di interire un tag ad una nota. Se il tag e' gia' presente lo associa semplicemente alla nota, altrimenti lo corea e poi lo associa
 	DECLARE _tag_ID integer;
     IF _tag NOT IN (SELECT tag FROM Tag WHERE tag=_tag) THEN
     BEGIN
@@ -582,6 +584,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `archivia_nota`(_ID_nota integer, _ID_utente integer)
 BEGIN
+#Sposta la nota in archivio
 	IF (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario') THEN
     BEGIN
 		UPDATE Nota SET archivio=1 WHERE ID_nota=_ID_nota;
@@ -609,6 +612,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `cancella_nota`(_ID_nota integer)
 BEGIN
+#Elimina la nota
 	DECLARE id integer;
 	SET id = (SELECT ID_descrizione FROM Nota WHERE Nota.ID_nota=_ID_nota);
     DELETE FROM Nota WHERE Nota.ID_nota=_ID_nota;
@@ -631,6 +635,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `cancella_utente`(_ID_utente integer)
 BEGIN
+#Elimina un determinato utente
 	DECLARE fine INT DEFAULT 0;
 	DECLARE ID_nota INT;
 	DECLARE cursore1 CURSOR FOR SELECT Nota.ID_nota FROM Nota INNER JOIN Gestisce ON Gestisce.ID_nota=Nota.ID_nota WHERE Gestisce.ID_utente=_ID_utente and Gestisce.privilegi='proprietario';
@@ -664,6 +669,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `cestina_nota`(_ID_nota integer, _ID_utente integer)
 BEGIN
+#Sposta una nota nel cestino
 	DECLARE _privilegi char(15);
     SET _privilegi = (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario');
 	IF _privilegi='proprietario' THEN
@@ -693,6 +699,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `elimina_allegato`(_ID_allegato integer)
 BEGIN
+#Elimina un allegato
 	DELETE FROM Allegato WHERE ID_allegato = _ID_allegato;
 END ;;
 DELIMITER ;
@@ -712,6 +719,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `inserisci_allegato`(_desc varchar(100), _ID_nota integer, p_allegato varchar(45))
 BEGIN
+#Inserisce un allegato
 	DECLARE _ID_desc integer;
 	SET _ID_desc = (SELECT ID_descrizione FROM Nota WHERE ID_nota=_ID_nota);
     INSERT INTO Allegato(descrizione, allegato, ID_descrizione) VALUES (_desc, p_allegato, _ID_desc);
@@ -756,6 +764,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `lista_paragrafi`(_ID_Nota integer)
 BEGIN
+#Lista dei paragrafi di una nota
 	SELECT ID_nota as id, Descrizione.titolo as titolo, ID_paragrafo as idparagrafo, Paragrafo.contenuto as testo, Paragrafo.posizione as posizione, Paragrafo.ID_descrizione as iddescrizione
     FROM (Nota INNER JOIN Descrizione ON Nota.ID_descrizione = Descrizione.ID_descrizione) INNER JOIN Paragrafo ON Paragrafo.ID_descrizione=Descrizione.ID_descrizione
     WHERE Nota.ID_nota = _ID_nota;
@@ -838,6 +847,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modifica_titolo`(_ID_descrizione integer, _titolo char(100))
 BEGIN
+#Modifica il titolo di una nota
 	UPDATE Descrizione SET titolo=_titolo WHERE ID_descrizione=_ID_descrizione;
 END ;;
 DELIMITER ;
@@ -924,6 +934,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pulisci_cestino`()
 BEGIN
+#Procedura che elimina le note presenti nel cestino da oltre 7 giorni. E' chiamata da un evento schedulato ogni giorno
 	DECLARE fine INT DEFAULT 0;
 	DECLARE ID_nota INT;
 	DECLARE cursore1 CURSOR FOR (SELECT Nota.ID_nota FROM Nota WHERE cestino=1 and (SELECT timestampadd(day, 7, Nota.data_cestino))> current_timestamp);
@@ -1026,6 +1037,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `rimuovi_tag`(_tag varchar(45), _ID_nota integer)
 BEGIN
+#Elimina un tag da una nota. Per scelta e' stato deciso di non farlo eliminare dal database, dato che lo stesso tag puo' catalogare piu' note
 	DECLARE _tag_ID integer;
     SET _tag_ID = (SELECT ID_tag FROM Tag WHERE tag=_tag);
     DELETE FROM Cataloga WHERE ID_tag=_tag_ID and ID_nota=_ID_nota;
@@ -1047,6 +1059,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ripristina_archivio`(_ID_nota integer, _ID_utente integer)
 BEGIN
+#Ripristina una nota dall'archivio
 	IF (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario') THEN
     BEGIN
 		UPDATE Nota SET archivio=0 WHERE ID_nota=_ID_nota;
@@ -1074,6 +1087,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ripristina_cestino`(_ID_nota integer, _ID_utente integer)
 BEGIN
+#Ripristina una nota dal cestino, dopo averne verificato se l'utente ne e' il proprietario
 	IF (SELECT privilegi FROM Gestisce WHERE ID_nota=_ID_nota AND ID_utente=_ID_utente AND privilegi='proprietario') THEN
     BEGIN
 		UPDATE Nota SET cestino=0 WHERE ID_nota=_ID_nota;
@@ -1162,6 +1176,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `visualizza_nota`(_ID_nota integer)
 BEGIN
+#Visualizza l'intera nota
 	SELECT Nota.ID_nota, titolo, visualizza_testo_nota(Nota.ID_nota) AS testo, nota_ultima_modifica(Nota.ID_nota) as data_ultima_modifica
     FROM Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione
     WHERE Nota.ID_nota=_ID_nota;
@@ -1217,4 +1232,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-11 20:02:27
+-- Dump completed on 2020-06-12 10:48:01
