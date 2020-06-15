@@ -5,12 +5,10 @@
 	if(isset($_POST['user']) && isset($_POST['password']))
 	{
 		$user = $_POST['user'];
-		//echo $_POST['password'];
 		$password = MD5($_POST['password']);
 		
 		$m_query = "SELECT ID_utente,cognome,nome,user FROM Utente WHERE user = '" .$user ."' && password = '" .$password ."';";
-		
-		//echo "<br/> " .$m_query ."<br/>";
+
 		
 		$mRisultato = $mysqliobj->query($m_query);
 		

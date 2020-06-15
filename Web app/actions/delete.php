@@ -4,8 +4,7 @@
     session_start();    
 
     $id=$_POST['id'];    
-
-
+    
     
 
     $sql="CALL cestina_nota(?, ?);";

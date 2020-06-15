@@ -3,21 +3,6 @@ require('../include/conn.php'); //Connessione al database
 session_start();
 
 
-// $id = $_REQUEST['id']; 
-// $sql="CALL visualizza_nota(?)";
-// $stmt=$mysqliobj->prepare($sql);  
-// $stmt->bind_param("i", $id);
-// $stmt->execute();
-// $res=$stmt->get_result();
-// $campi = $res->fetch_assoc();
-
-
-// $data['id']=$campi['ID_nota'];
-// $data['titolo']=$campi['titolo'];
-// $data['testo']=$campi['testo'];
-// header('Content-type: text/json');
-// echo json_encode(['data' => $data]);
-
 $id = $_REQUEST['id'];
 
 

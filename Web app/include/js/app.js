@@ -22,7 +22,6 @@ const setForm1 = ({id, titolo, idparagrafo, testo, posizione }) => {
     $(y[i]).val(idparagrafo[i]);
     
   }
-  // $('#note').val(testo);
 
   
 }
