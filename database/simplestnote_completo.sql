@@ -86,7 +86,7 @@ CREATE TABLE `Descrizione` (
   `data` datetime NOT NULL,
   `titolo` varchar(100) NOT NULL DEFAULT '[Inserisci un titolo]',
   PRIMARY KEY (`ID_descrizione`)
-) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `Descrizione` (
 
 LOCK TABLES `Descrizione` WRITE;
 /*!40000 ALTER TABLE `Descrizione` DISABLE KEYS */;
-INSERT INTO `Descrizione` VALUES (1,'2020-06-06 12:10:30','Test di prova'),(98,'2020-06-11 19:46:25','Titolo di prova 1');
+INSERT INTO `Descrizione` VALUES (1,'2020-06-06 12:10:30','Test di prova'),(98,'2020-06-11 19:46:25','Titolo di prova 1'),(99,'2020-06-23 17:34:42','Test sottonote');
 /*!40000 ALTER TABLE `Descrizione` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -134,7 +134,7 @@ CREATE TABLE `Gestisce` (
   KEY `ID_nota_idx` (`ID_nota`),
   CONSTRAINT `ID_nota` FOREIGN KEY (`ID_nota`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_utente` FOREIGN KEY (`ID_utente`) REFERENCES `Utente` (`ID_utente`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -143,7 +143,7 @@ CREATE TABLE `Gestisce` (
 
 LOCK TABLES `Gestisce` WRITE;
 /*!40000 ALTER TABLE `Gestisce` DISABLE KEYS */;
-INSERT INTO `Gestisce` VALUES (1,1,1,'proprietario'),(93,13,95,'proprietario'),(94,1,95,'lettura');
+INSERT INTO `Gestisce` VALUES (1,1,1,'proprietario'),(93,13,95,'proprietario'),(94,1,95,'lettura'),(95,1,96,'proprietario');
 /*!40000 ALTER TABLE `Gestisce` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,7 +164,7 @@ CREATE TABLE `Modifica` (
   KEY `ID_par_idx` (`ID_paragrafo`),
   CONSTRAINT `ID_par` FOREIGN KEY (`ID_paragrafo`) REFERENCES `Paragrafo` (`ID_paragrafo`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_user` FOREIGN KEY (`ID_utente`) REFERENCES `Utente` (`ID_utente`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +173,7 @@ CREATE TABLE `Modifica` (
 
 LOCK TABLES `Modifica` WRITE;
 /*!40000 ALTER TABLE `Modifica` DISABLE KEYS */;
-INSERT INTO `Modifica` VALUES (3,1,5,'2020-06-06 13:23:01'),(4,1,5,'2020-06-06 14:52:13'),(52,13,49,'2020-06-11 19:46:25'),(53,13,50,'2020-06-11 19:46:25'),(54,13,49,'2020-06-11 19:49:52'),(55,13,50,'2020-06-11 19:49:52');
+INSERT INTO `Modifica` VALUES (3,1,5,'2020-06-06 13:23:01'),(4,1,5,'2020-06-06 14:52:13'),(52,13,49,'2020-06-11 19:46:25'),(53,13,50,'2020-06-11 19:46:25'),(54,13,49,'2020-06-11 19:49:52'),(55,13,50,'2020-06-11 19:49:52'),(56,1,51,'2020-06-23 17:34:42'),(57,1,52,'2020-06-23 17:34:42');
 /*!40000 ALTER TABLE `Modifica` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -199,7 +199,7 @@ CREATE TABLE `Nota` (
   KEY `ID_superiore_idx` (`ID_superiore`),
   CONSTRAINT `ID_descrizione` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `ID_superiore` FOREIGN KEY (`ID_superiore`) REFERENCES `Nota` (`ID_nota`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -208,7 +208,7 @@ CREATE TABLE `Nota` (
 
 LOCK TABLES `Nota` WRITE;
 /*!40000 ALTER TABLE `Nota` DISABLE KEYS */;
-INSERT INTO `Nota` VALUES (1,'2020-06-06 12:10:30',1,NULL,0,0,0,NULL),(95,'2020-06-11 19:46:25',98,NULL,0,0,0,NULL);
+INSERT INTO `Nota` VALUES (1,'2020-06-06 12:10:30',1,NULL,0,0,0,NULL),(95,'2020-06-11 19:46:25',98,1,0,0,0,NULL),(96,'2020-06-23 17:34:42',99,95,0,0,0,NULL);
 /*!40000 ALTER TABLE `Nota` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -254,7 +254,7 @@ CREATE TABLE `Paragrafo` (
   PRIMARY KEY (`ID_paragrafo`),
   KEY `ID_descriz_idx` (`ID_descrizione`),
   CONSTRAINT `ID_descriz` FOREIGN KEY (`ID_descrizione`) REFERENCES `Descrizione` (`ID_descrizione`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -263,7 +263,7 @@ CREATE TABLE `Paragrafo` (
 
 LOCK TABLES `Paragrafo` WRITE;
 /*!40000 ALTER TABLE `Paragrafo` DISABLE KEYS */;
-INSERT INTO `Paragrafo` VALUES (1,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,1),(2,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,2),(3,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,3),(4,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,4),(5,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.',1,5),(49,'Paragrafo 1',98,1),(50,'Paragrafo 2',98,2);
+INSERT INTO `Paragrafo` VALUES (1,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,1),(2,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,2),(3,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,3),(4,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',1,4),(5,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.',1,5),(49,'Paragrafo 1',98,1),(50,'Paragrafo 2',98,2),(51,'test di sottonote',99,1),(52,'per provare la CTE',99,2);
 /*!40000 ALTER TABLE `Paragrafo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -1222,6 +1222,36 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `visualizza_sottonote_cte` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `visualizza_sottonote_cte`(_ID_nota integer)
+BEGIN
+	DECLARE _livello integer;
+    SET _livello = (SELECT livello FROM Nota WHERE Nota.ID_nota=_ID_nota);
+    IF _livello<2 THEN
+    BEGIN
+		WITH RECURSIVE temp AS (
+			select ID_nota, titolo, livello, ID_superiore from (Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione) WHERE ID_nota=_ID_nota
+            UNION ALL
+            select Nota.ID_nota, Descrizione.titolo, Nota.livello, Nota.ID_superiore from (Nota INNER JOIN Descrizione ON Nota.ID_descrizione=Descrizione.ID_descrizione) INNER JOIN temp on Nota.ID_superiore=temp.ID_nota
+        )
+        Select ID_nota, titolo, livello, ID_superiore from temp ORDER BY ID_nota;
+	END;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1232,4 +1262,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-15  9:46:39
+-- Dump completed on 2020-06-23 17:46:59
